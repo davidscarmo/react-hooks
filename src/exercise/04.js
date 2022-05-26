@@ -8,29 +8,20 @@ function Board() {
     return Array(9).fill(null)
   }
   const [squares, setSquares] = React.useState(getInitialSquares)
-  const [winner, setWinner] = React.useState(null)
-  const [status, setStatus] = React.useState(null)
+  const nextValue = calculateNextValue(squares)
+  const whoIsTheWinner = calculateWinner(squares)
+  const status = calculateStatus(whoIsTheWinner, squares, nextValue)
+
   function selectSquare(square) {
-    if (squares[square] || winner) return
+    if (squares[square] || whoIsTheWinner) return
 
-    const nextValue = calculateNextValue(squares)
-    const currentValue = nextValue === 'X' ? 'O' : 'X'
-    const newSquare = squares
-
-    newSquare[square] = currentValue
-    setSquares([...newSquare])
-
-    const whoIsTheWinner = calculateWinner(squares)
-    if (whoIsTheWinner) {
-      setWinner(whoIsTheWinner)
-    }
-    setStatus(calculateStatus(whoIsTheWinner, squares, nextValue))
+    const newSquare = [...squares]
+    newSquare[square] = nextValue;
+    setSquares(newSquare)
   }
 
   function restart() {
     setSquares(getInitialSquares)
-    setWinner(null)
-    setStatus(null)
   }
 
   function renderSquare(i) {
